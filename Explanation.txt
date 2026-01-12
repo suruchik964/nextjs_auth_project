@@ -1,0 +1,223 @@
+=> Nextjs
+-> react framework 
+-> React->frontend 
+-> nextjs -> frontend + backend = fulstacck , and frontend = react
+-> nextjs have built in backend support via API routes, so we dont nedd express for simple backend logic, express is needed if we want a separate backend server and in some other conditions
+
+=> Library->
+Provides specific function/tools
+ex-> react, axios ,etc
+you decide the flow 
+flexible , you pick what you want
+
+=> Framework-> 
+Provides a complete structure or way to built the app
+ex-> nextjs, angular, django
+rules and structure are enforced 
+flow is directed by frame work
+
+=> Frameworks are built on top of libraries -> ex nextjs built on top of react
+
+=> nextjs is a framework so rules need to be followed 
+
+=> Folder structure ->
+either ->
+root 
+  src
+    app
+    pages
+    ...
+  public
+  ...
+
+or -> 
+root
+  app
+  pages
+  public
+  ...
+
+We are following the first structure and sir -> 1st one
+But if we follow the 2nd structure -> every folder kept in src will come in root derectory
+
+=> App 
+    -> backend
+    ->frontend
+the app folder has bith backend + frontend 
+
+inside app folder -> api folder will be made -> inside api folder backend will come
+
+=> The naming convection in very importtant in nextjs
+
+  All backend files will be named as -> routes
+  all frontend files will be named as -> page
+
+=> It is very important to follow naming convention of files and folders her and also where a folder or file should be kept
+
+=> Nextjs -> it is a edge run framework ->Next.js edge runtime lets certain backend code (like middleware or auth checks) run on servers near the user instead of one central server, reducing distance, improving speed, and helping apps scale globally.
+so since edge servers are short-lived and stateless, they can’t keep a permanent database connection.
+So the DB connection is created per request.
+
+=> In nextjs if we made folder in app named something and it in a file named page.ts then it is a frontend component and we dont have to handle the route for it , that is if we write /something(name of that folder) in url then that component gets loaded.
+
+=> SO now we are making our signup page -> the frontend part => 
+so what we will be doing here is we will have to fetch some data from the fronend and give it to the backend(database)
+
+but in the recent version of next js everything is a server component, and server component do not have access to anything that is on the frontend side
+basically-> 
+  All components are processed on the server first.
+  Server Components are converted to HTML only.
+  Client Components are converted to HTML + their JS.
+  The server sends this HTML (and JS for client components) to the browser, and the browser displays it.
+  ❗ Important nuance:
+    Client Component JS runs in the browser
+    Server Component JS never goes to the browser
+(the whole server and client component explanationis written down)
+
+so the signup page (frontend part) will be a client component 
+And to make a component a client component just write this on the top of that component => "use client";
+
+=>We made a folder dbConfig-> in src outside of app -> here we will configure the database
+Here we made a function "connect" -> This 'connect' function created here needs to come in every single place in the api
+because without connect we cannot talk to database and every single time an api call is there we have to connect with the database
+
+=> Then we wrote code in backend file of signup(app/api/signup/routes)
+there we wrote how we will store the value of user in db when he sign's update
+
+=> Then we went to frontend file of signup and made a function which sends a POST req to this url "/api/users/signup" (and this function is called when needed-> in the signup button->onClick -> the backend ka function will run to store the user in db)
+
+Then we also created frontend and backend for login , and on login in backend we also generate a token(jwt) that is tored in our cookies
+
+=>Now we want to make a logout option -> so we will create a backend file for logout -> in that we will be deleting the token from the cookies so the user logs output
+then we will make a button in profile ka page.tsx and the button onclick calls a function and taht function will call the route logout. 
+
+=> Now we will be creating the middleware, now in nextjs the middleware name is changed to "proxy" 
+so we will make a proxy.ts file in src //more about what we want to do with it is written in proxy.ts
+
+=> Now we want a button on profile page which gives us the username of user,
+so 1st we made a helper file named -> get_data_from_token -> here we get the user id get_data_from_token
+then we created "me" a backend folder -> in it -> route -> in that we get the user id from the above helper function then we will extract user from db with its help and retuen the user
+then inside profile/page.tsx -> we made a button ad onclick-> function -> that gets the username of the user and the button will display it , also we will add the link in the button so on click on username the user will get directed to profile/username url
+
+=> Two ways for extracting the url info =?
+
+two types of urls ->
+1 -> domain.com/veriftoken/abcdefgh
+2 -> domain.com/veriftoken?token=abcdefgh
+
+for 1st type we can access the token(abcdefgh) from url directly using params [id] => this approach is better if we are using a server component
+for the 2nd type to access all that is written in the url after '?' -> windows.location.search => this approach is better if we are using a client component
+
+=> Now we will be creating a mailer.ts file in helpers
+In this project we will write the functions to update send , etc in mailer itself , but it is not done usually lie this , all these functions are written in the controller
+
+=>Whole server component and client compopnent story =>
+# 🌐 Server & Client Components — COMPLETE FLOW SUMMARY
+
+## 1️⃣ Browser starts everything
+
+You type a URL and press Enter.
+The **browser sends a request to the SERVER**:
+> “Give me the page”
+At this moment:
+* Browser has **no React**
+* No components are running in browser yet
+
+## 2️⃣ Server Components run on the SERVER
+On the server:
+* React executes **Server Components**
+* They:
+  * fetch data from DB / APIs
+  * build the page structure
+  * decide **where client interaction is needed**
+
+Server Components **do NOT go to the browser**.
+They only produce **HTML**.
+---
+## 3️⃣ Server finds Client Components inside
+While rendering:
+* Server sees some components marked `"use client"`
+* Server understands:
+> “These parts need browser interaction”
+So the server prepares:
+1. HTML for **everything**
+2. JavaScript **only for Client Components**
+
+---
+
+## 4️⃣ Server sends response to Browser
+The server sends **ONE response** containing:
+* 🧱 HTML (from Server Components)
+* 📦 JS bundles (only for Client Components)
+❗ Server Component JS is **never sent**
+---
+## 5️⃣ Browser receives and displays HTML
+
+Now in the browser:
+
+* HTML is rendered immediately
+* Page is visible
+* Buttons appear (but may not work yet)
+At this point:
+* Browser did **not run Server Components**
+* It only displayed their HTML output
+---
+## 6️⃣ Client Components become alive (Hydration)
+After HTML is shown:
+* Browser loads JS sent for Client Components
+* React attaches:
+  * event handlers
+  * state
+  * effects
+This step is called **HYDRATION**.
+Now:
+* Buttons work
+* Forms submit
+* State updates happen
+---
+## 7️⃣ User interacts (click / submit)
+Interaction happens **ONLY in Client Components**.
+Example:
+* User clicks “Like”
+* Client Component function runs in browser
+But:
+❌ Browser **cannot touch DB**
+---
+## 8️⃣ Client asks Server to update DB
+Client sends a request:
+* API route
+* OR Server Action
+```txt
+Client (browser) → Server → Database
+```
+Server:
+* Runs secure backend code
+* Updates DB
+* Prepares updated data
+---
+## 9️⃣ Server sends updated result
+Server sends back:
+* updated data (JSON)
+* OR re-rendered HTML
+Browser:
+* updates UI
+* user sees change
+---
+## 10️⃣ WHY this design works
+* Server does heavy work (data, security)
+* Client does interaction (UX)
+* Minimal JS is sent
+* Secrets stay hidden
+* App is fast & scalable
+---
+## 🧠 FULL FLOW IN ONE LINE (MEMORY LOCK)
+> **Browser requests page → Server Components run and generate HTML → Server sends HTML + Client JS → Browser renders HTML → Client JS hydrates → User interacts → Client calls server → Server updates DB → UI updates**
+---
+## 🔑 FINAL TRUTH (READ THIS IF NOTHING ELSE)
+> **Client Components receive their HTML and JS from the SERVER, but they execute only in the BROWSER, and whenever they need data or DB changes, they must call the SERVER again.**
+---
+If you want, next I can:
+* Convert this into a **one-page notes format**
+* Draw a **text diagram**
+* Explain this same flow using **Next.js folder example**
+Just say 👍
