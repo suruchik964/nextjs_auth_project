@@ -11,7 +11,8 @@ export default function VerifyEmailPage() {
 
   const verifyUserEmail = async () => {
     try {
-      await axios.post("/api/users/verifyemail", { token });
+      //await axios.post("/api/users/verifyemail", { token });
+      await axios.get(`/api/users/verifyemail?token=${token}`);
       set_verified(true);
     } catch (error: any) {
       set_error(true);
@@ -19,8 +20,10 @@ export default function VerifyEmailPage() {
     }
   };
   useEffect(() => {
-    const urlToken = window.location.search.split("=")[1];
-    set_token(urlToken || "");
+    //const urlToken = window.location.search.split("=")[1];
+    //set_token(urlToken || "");
+    const params = new URLSearchParams(window.location.search);
+    set_token((params.get("token") || "").trim());
   }, []);
   useEffect(() => {
     if (token.length > 0) {
@@ -42,7 +45,9 @@ export default function VerifyEmailPage() {
       )}
       {error && (
         <div>
-          <h2 className="text-2xl bg-red-500 text-black">Email Verified</h2>
+          <h2 className="text-2xl bg-red-500 text-black">
+            Verification Failed
+          </h2>
         </div>
       )}
     </div>

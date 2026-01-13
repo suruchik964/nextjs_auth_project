@@ -4,13 +4,13 @@ import User from "@/src/models/user_model";
 
 connect();
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const reqBody = await request.json();
-    const { token } = reqBody;
+    //const reqBody = await request.json();
+    //const { token } = reqBody;
     // Get token from URL query parameters
-    //const url = new URL(request.url);
-    //const token = url.searchParams.get("token");
+    const url = new URL(request.url);
+    const token = url.searchParams.get("token");
 
     if (!token) {
       return NextResponse.json({ error: "Token is required" }, { status: 400 });
