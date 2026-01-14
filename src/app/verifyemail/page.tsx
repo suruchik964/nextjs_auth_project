@@ -28,6 +28,7 @@ export default function VerifyEmailPage() {
     const params = new URLSearchParams(window.location.search);
     set_token((params.get("token") || "").trim());
   }, []);
+
   useEffect(() => {
     if (token.length > 0) {
       verifyUserEmail();

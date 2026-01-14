@@ -108,8 +108,19 @@ two types of urls ->
 for 1st type we can access the token(abcdefgh) from url directly using params [id] => this approach is better if we are using a server component
 for the 2nd type to access all that is written in the url after '?' -> windows.location.search => this approach is better if we are using a client component
 
+=> Now we want to do verification of email on signup thing.
+for that-> when someone will signup we will store his data in db (as we do) and in it the is_verified field will be kept false.
+        -> then email will send to his email that he entered as soon he clicks on signup and a hashed token will be created -> verification token will be set with this hashed token (in db) and the email will be sent with a link that has token in it
+        -> that email will have a verification link(link will have the token) as soon as the user will click on that link a page will open(page will grab token from the link) and it will make a backend request(putting the grabed token in backend req)-> the backend will also grab the token from the req url then -> it will find a user from db with this token -> if no user is found that means email is not verified , but if the user is found then we will set the is_verified field of the found user to be true in db and hence the user(email) will be verified.
+
+Now lets understand its code flow 
+-> so first signup page -> before saving user it will call a function send email(with email type ,email and userid)
+-> the send email function is in mailer (helper)->if the email type is verify -> it will generate a hashed token and with provided userid it will find the user and in db its verification token will be set with this token , and then it will send an email to the provided email which will have a link(the link will have the token)
+-> when then user will click on the link provided in email (link is the url of the page going to open on clicking and this url contains the token)-> a page will open and then it will grab the token from url then it will make a backend request(putting the grabed token in backend req)-> the backend will also grab the token from the req url then -> it will find a user from db with this token -> if no user is found that means email is not verified , but if the user is found then we will set the is_verified field of the found user to be true in db and hence the user(email) will be verified.
+
 => Now we will be creating a mailer.ts file in helpers
 In this project we will write the functions to update send , etc in mailer itself , but it is not done usually lie this , all these functions are written in the controller
+
 
 =>Whole server component and client compopnent story =>
 # 🌐 Server & Client Components — COMPLETE FLOW SUMMARY

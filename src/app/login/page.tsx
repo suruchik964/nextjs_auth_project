@@ -69,6 +69,40 @@ export default function LoginPage() {
         Login
       </button>
       <Link href="/signup">Visit signup page</Link>
+      <Link href="/forgot_password">Forgot password</Link>
     </div>
   );
 }
+
+/*
+✅ When to use useRouter()
+
+Use it when you need programmatic / conditional navigation, for example:
+
+Redirect after login / signup / logout
+
+Redirect after form submit
+
+Navigate based on conditions (e.g., if user not authenticated → send to login)
+
+Navigate inside a button click handler or function
+
+Get route params / pathname in code
+
+Example:
+
+const router = useRouter();
+router.push("/profile");
+
+❌ When NOT to use useRouter()
+
+You don’t need it when:
+
+You’re just navigating with a normal link
+
+No condition or logic required
+
+Use:
+
+<Link href="/profile">Go to Profile</Link>
+*/
